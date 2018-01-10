@@ -1,0 +1,16 @@
+﻿
+
+django-admin startproject project_name
+
+python manage.py startapp app_name
+
+#创建超级用户
+python3 manage.py createsuperuser
+
+#启动服务
+python3 manage.py runserver 9999
+
+#同部数据
+
+python3 manage.py makemigrations
+python3 manage.py migrate
