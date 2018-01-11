@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 admin.site.site_header =u'爬虫脚本管理系统'
-admin.site.site_footer='北京创数纪信息技术有限公司'
+admin.site.site_footer=u'北京创数纪信息技术有限公司'
 
 class BaseSetting(admin.ModelAdmin):
     enable_themes=True
@@ -51,7 +51,7 @@ class UserFilter(admin.SimpleListFilter):
                                     birthday__lte=date(1989, 12, 31))
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display=['nick_name','birthday','gender',]
+    list_display=['user','nick_name','birthday','gender',]
     # list_editable=['nick_name','birthday','gender',]
     # list_filter = (UserFilter,)
     #
@@ -71,7 +71,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         qs = super(UserProfileAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(nick_name=request.user)
+        return qs.filter(user=request.user)
 
 admin.site.register(UserProfile,UserProfileAdmin)
 # admin.site.register(views.BaseAdminView, BaseSetting)

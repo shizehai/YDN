@@ -7,7 +7,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 class UserProfile(models.Model):
-    # user = models.OneToOneField(User,on_delete=models.CASCADE)
+    # user = models.OneToOneField(User,blank=True,on_delete=models.CASCADE)
+    user = models.CharField(max_length=50, verbose_name='用户名', default='')
     nick_name = models.CharField(max_length=50, blank=True,verbose_name='昵称', default='')
     birthday = models.DateField(null=True, blank=True, verbose_name='生日')
     gender = models.CharField(max_length=6, blank=True,choices=(('male', '男'), ('female', '女')), default='female', verbose_name='性别')
@@ -21,7 +22,24 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return u'用户设置'
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        # UserProfile.objects.create(user=instance)
+        profile = UserProfile()
+        profile.user = instance
+        profile.save()
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    try:
+        one = UserProfile.objects.get(user=User.username)
+        one.user = instance
+        one.save()
+    except:
+        profile = UserProfile()
+        profile.user = instance
+        profile.save()
+
+    # instance.profile.save()
