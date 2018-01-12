@@ -27,7 +27,7 @@ class TAC(scrapy.Spider):
     #
 
     def start_requests(self):
-        head_nums=['53','86','54','01','45','91','30','31','33','10','52','51','50','49','99','98','97','44','35']
+        head_nums=['49','44','35','33','52','50',]
         page='1'
         for head_num in head_nums:
             url = 'https://www.numberingplans.com/?page=plans&sub=imeinr&' \
