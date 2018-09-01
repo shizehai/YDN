@@ -13,13 +13,11 @@ import requests,urllib
 from CompanyInfo.settings import MONGODB_IP,MONGODB_DB,MONGODB_TABLE
 from selenium import webdriver
 # 导入 items 下面的自定义 Item 类
-from CompanyInfo.items import Item
+from CompanyInfo.items import Item,Item_ex
 
-# try:
-#   from map.items import mapItem
-# except Exception as e:
-#     print e
-#lmeastboy
+
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 def cookie_str_to_dict(cookies_str):
     COOKIES={}
     tmp=cookies_str.split(';')
@@ -27,15 +25,22 @@ def cookie_str_to_dict(cookies_str):
         key_value=item.split('=')
         COOKIES[key_value[0]]=key_value[1]
     return COOKIES
-cookie_str='UM_distinctid=1624d0052283ed-08fe61c952061f8-1269624a-100200-1624d00522a54f; cna=PK0rEkDTckYCATo+zK9Y6Ijy; isg=BBcXOF1eAdor0YVRLaWvPdsJpYuh9Os3D-T7kWlEQ-ZJmDbacShGDon6_riGa8M2; ali_ab=58.62.205.233.1521710288954.8; alicnweb=homeIdttS%3D71583866516567953900986988134051546885%7Ctouch_tb_at%3D1521784226080%7ChomeIdttSAction%3Dtrue%7Clastlogonid%3Dlmeastboy; ad_prefer="2018/03/23 14:19:10"; h_keys="niuzaiku#%u4e1c%u839e#%u7537T%u6064#%u7537%u88c5"; alisw=swIs1200%3D1%7C; ali_beacon_id=58.62.205.233.152171061644.078830.1; last_mid=b2b-87075679; __last_loginid__=lmeastboy; _cn_slid_=z32rNqg27%2F; cn_tmp.sig=hvMgNhgiUUzXhaEflHcWqKDxU0GeBufkCOLSAkh4jDA; cn_m_s.sig=_wavPcna-gOpurUdYp3Gr9ZjXOQaLC1EcgZVgtB6Oxs; ali_apache_track.sig=cE13ut9KHyEt3zkFppskZzVrXvaZS2vbMOo270efb4c; __cn_logon_id__.sig=3DszBWnLBvy16IGzJrU4cEyzibSvzqhp8dvu1Qg3lRs; ali-ss=eyJtZW1iZXJJZCI6bnVsbCwidXNlcklkIjpudWxsLCJsb2dpbklkIjpudWxsLCJzaWQiOm51bGwsImVjb2RlIjpudWxsLCJsb2dpblN0YXR1c1JldE1zZyI6bnVsbCwibG9naW5NZXNzYWdlRXJyb3IiOm51bGwsImxvZ2luRXJyb3JVc2VyTmFtZSI6bnVsbCwiY2hlY2tjb2RlIjpudWxsLCJzZWNyZXQiOiJZNTFjd0d6aU5STURlSC05aER6M1UxMlciLCJfZXhwaXJlIjoxNTIxODcxNTE4NDIxLCJfbWF4QWdlIjo4NjQwMDAwMH0=; webp=0; _m_h5_tk=64255af548b509dc42c3c40411ca1230_1521787090192; _m_h5_tk_enc=bd84ac6aceba93a1931138d6b23b7a1e; ali_apache_id=11.130.127.209.1521711225908.276176.1; JSESSIONID=qi9ZhIe-voPZTnVRIqYeXcVET7-veFz4nQ-f0g; _tmp_ck_0=NY1Y64rIBuCuT5s1qqP%2Fp7QBlse9WbAZsPiE5T%2F2NKEMToPX25bZw6YEnwRSxSYLUpT%2Fm6nlC%2Fo%2F%2Fe7wHgh%2B0imyOFNU3GqcM4qjCqJmAzDaPACJoUznx2A%2F0mEohaohFe1P1REpELoTuf0I1j63lPD2u4YvLP7X8DqJbFj9K4huDCeuCbLCZc536Lo%2BV%2BR9jqDQnyO1C99mPOCqUwHX9BDSY9E6tFL1QpRrKoH%2BArIutOErgtNCy8rBRRzO77hAss0ir%2BKj61YE2CcMtn9i1iMgnVeu8ClAvbtEM7ZiJ4gKDHcGfqx4VXUt2QrDmCoNNIVqj5H99stBt8FyWkOV0PIWD3kap%2FPzItu9AHyNfMXtFhsbMQ3KYinE3wQZ5n3u4jpJ5zIb9dah2xp4EslOyemXJgBZXtrXT3xsLnhfY3YvuqkHlk6F7IhoS9cS9h5AzUD%2BFWfubeSjQgHHNDhqP03DdxXgr8OiyxvPQBxngy%2BSzoPN1yt4Ja1AaXZiaYYBvaOyDrWr5Y8%3D; __cn_logon__=false; _csrf_token=1521773723245; ali_apache_tracktmp=c_w_signed=Y; LoginUmid=HIVsOEbQBTPi3wdaF8pnlF3pICU94Kf0o4yv9C3wKL4ogBSl%2FbuCDg%3D%3D; userID=XdggMZBWjIsFNXQye%2Fx3LRgKuADUlOGuKuz6VSpnjDI6sOlEpJKl9g%3D%3D; userIDNum=3zXgccP7ges6sOlEpJKl9g%3D%3D; ctoken=3tf1vEMAkkPYAAxv40PTzealot; _sync_time_=1521785105144; _sync_time_.sig=Qp3O-ERo3bZmzfC2DVRZ-UOsr9a0oPMIQd_qjsfLcso'
+cookie_str='TYCID=8207de4095f511e88a7d252ba3261424; undefined=8207de4095f511e88a7d252ba3261424; ssuid=6374018544; _ga=GA1.2.1441971809.1533174235; jsid=SEM-BAIDU-CG-SY-002211; _gid=GA1.2.1027893869.1535345936; RTYCID=cd82182144c247ad8bf6840a4f05d840; CT_TYCID=fc572b075f344f3ba23c82d3e4e27957; aliyungf_tc=AQAAAMSZ2gQt/QsASg9BcV12TfQLLYGY; csrfToken=xfM4tUrldL46YRL-XawlASz1; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1533174234,1534384253,1535345936,1535423041; bannerFlag=true; token=a60ca595a7e04921a1c1b7f6a5f7816c; _utm=aaa644903ee34b18a8ab8bab9d11573a; tyc-user-info=%257B%2522token%2522%253A%2522eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNTgxMzM2Mjg5NSIsImlhdCI6MTUzNTQyNTQ1MywiZXhwIjoxNTUwOTc3NDUzfQ.xH9SCMN2Ea7kr5Oiu4EOc8S6s3ZHyM50dXBTm_tV7n5GQOPYRq1juPGaCgw0vWspf2rJrpPvcI4mg-kpQ0HHow%2522%252C%2522integrity%2522%253A%25220%2525%2522%252C%2522state%2522%253A%25220%2522%252C%2522redPoint%2522%253A%25220%2522%252C%2522vipManager%2522%253A%25220%2522%252C%2522vnum%2522%253A%25220%2522%252C%2522onum%2522%253A%25220%2522%252C%2522mobile%2522%253A%252215813362895%2522%257D; auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNTgxMzM2Mjg5NSIsImlhdCI6MTUzNTQyNTQ1MywiZXhwIjoxNTUwOTc3NDUzfQ.xH9SCMN2Ea7kr5Oiu4EOc8S6s3ZHyM50dXBTm_tV7n5GQOPYRq1juPGaCgw0vWspf2rJrpPvcI4mg-kpQ0HHow; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1535436487; cloud_token=f173a649505947b18feb8f2ed6b7df9f'
+
 COOKIES=cookie_str_to_dict(cookie_str)
 
 class alibaba(scrapy.Spider):
 
     name = 'alibaba' # 必须, 对应的使用 scrapy crawl <name> 指令运行爬虫
-    drive = webdriver.Chrome(executable_path=u'D:\\ProgramData\\chromedriver.exe', )
-    drive.get('https://login.1688.com/member/signin.htm')
-    time.sleep(2)
+    # drive = webdriver.Chrome(executable_path=u'D:\\ProgramData\\chromedriver.exe', )
+    # url='https://login.taobao.com/member/login.jhtml?style=mini&css_style=b2b&from=b2b&full_redirect=true&redirect_url=https%3A%2F%2Flogin.1688.com%2Fmember%2Fjump.htm%3Ftarget%3Dhttps%253A%252F%252Flogin.1688.com%252Fmember%252FmarketSigninJump.htm%253FDone%253Dhttp%25253A%25252F%25252Flogin.1688.com%25252Fmember%25252FtaobaoSellerLoginDispatch.htm&reg=http%3A%2F%2Fmember.1688.com%2Fmember%2Fjoin%2Fenterprise_join.htm%3Flead%3Dhttp%253A%252F%252Flogin.1688.com%252Fmember%252FtaobaoSellerLoginDispatch.htm%26leadUrl%3Dhttp%253A%252F%252Flogin.1688.com%252Fmember%252FtaobaoSellerLoginDispatch.htm%26tracelog%3Dlogin_s_reg'
+    # drive.get(url)
+    # drive.find_element_by_id("TPL_username_1").click()
+    # time.sleep(0.3)
+    # drive.find_element_by_id("TPL_username_1").send_keys("lmeastboy")
+    # time.sleep(0.3)
+    #
+
     headers={
             'Accept':'application/json, text/plain, */*',
             'Content-Type':'application/x-www-form-urlencoded',
@@ -64,7 +69,7 @@ class alibaba(scrapy.Spider):
             req.meta['url'] = copy.deepcopy(url)
             req.meta['all'] = 0
             yield req
-        
+
     def parse_list_item(self, response):
         item = copy.deepcopy(response.meta['item'])
         page = response.meta['page']
@@ -75,10 +80,16 @@ class alibaba(scrapy.Spider):
 
         # response文本预处理
         try:
+            print 'A'*30
             self.drive.find_element_by_xpath(".//*[@id='sw_mod_pagination_content']/div/a[11]").click()
         except:
-            self.drive.get(url)
-        time.sleep(11)
+            print 'B'*30
+        self.drive.execute_script("window.scrollBy(0,500)", "")
+
+        # time.sleep(2)
+        # self.drive.execute_script("window.scrollBy(0,1000)", "")
+        self.drive.get(url)
+        time.sleep(10)
         text=self.drive.page_source
         soup=BeautifulSoup(text)
         lines=soup.find_all(class_="company-list-item")
@@ -94,11 +105,20 @@ class alibaba(scrapy.Spider):
                 else:
                     all = 0
         if text.find(u'现您的网络环境')>1:
+            self.drive.close()
+            time.sleep(3)
+            self.drive = webdriver.Chrome(executable_path=u'D:\\ProgramData\\chromedriver.exe', )
+            self.drive.get('https://www.1688.com/')
+            time.sleep(2)
+            for cookie in self.cookies:
+                self.drive.add_cookie(cookie)
+            time.sleep(2)
+
             keyword_encode = urllib.quote(keyword.encode('GBK'))
             last_url = last_url_.format(keyword=keyword_encode, page=str(page))
             req = scrapy.Request('https://www.baidu.com/', callback=self.parse_list_item, dont_filter=True)
             req.meta['item'] = copy.deepcopy(item)
-            req.meta['page'] = page
+            req.meta['page'] = copy.deepcopy(page)
             req.meta['url_'] = copy.deepcopy(last_url_)
             req.meta['url'] = copy.deepcopy(last_url)
             req.meta['all'] = copy.deepcopy(all)
@@ -113,7 +133,7 @@ class alibaba(scrapy.Spider):
             last_url=last_url_.format(keyword=keyword_encode, page=str(page))
             req = scrapy.Request('https://www.baidu.com/',callback=self.parse_list_item,dont_filter=True)
             req.meta['item'] = copy.deepcopy(item)
-            req.meta['page'] = page
+            req.meta['page'] = copy.deepcopy(page)
             req.meta['url_'] = copy.deepcopy(last_url_)
             req.meta['url'] = copy.deepcopy(last_url)
             req.meta['all'] = copy.deepcopy(all)
@@ -133,11 +153,11 @@ class alibaba(scrapy.Spider):
             req.meta['item'] = copy.deepcopy(item)
 
             yield req
-    
+
 
     def parse_item(self, response):
         item = copy.deepcopy(response.meta['item'])
-        
+
         soup = BeautifulSoup(response.text)
 
         company=soup.find(class_="company-name").get_text()
@@ -174,5 +194,109 @@ class alibaba(scrapy.Spider):
         item['money'] = money
         item['what'] = what
         item['addr'] = addr
+
+        yield item
+
+
+headers={
+            'Accept':'application/json, text/plain, */*',
+            'Content-Type':'application/x-www-form-urlencoded',
+            'Host':'www.tianyancha.com',
+            'User_Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:58.0) Gecko/20100101 Firefox/58.0',
+            'X-Requested-With':'XMLHttpRequest',
+        }
+
+class tianyancha(scrapy.Spider):
+
+    name = 'tianyancha' # 必须, 对应的使用 scrapy crawl <name> 指令运行爬虫
+
+    def start_requests(self):
+        with codecs.open('keywords.csv',encoding='utf-8') as fr:
+            keywords = fr.readlines()
+        page = 1
+        for keyword in keywords:
+            keyword=keyword.replace('\n','')
+            url_='https://www.tianyancha.com/search/p{page}?key={keyword}'
+            # keyword_encode=urllib.quote(keyword.encode('GBK'))
+            url = url_.format(keyword=keyword, page=str(page))
+            item = Item_ex()
+            item['keyword'] = keyword
+            item['date']=datetime.datetime.now().strftime('%Y-%m-%d')
+            item['spider_name']=self.name
+            req = scrapy.Request(url,callback=self.parse_list_item,headers=headers)
+            req.meta['page'] = page
+            req.meta['item'] = copy.deepcopy(item)
+            req.meta['url_'] = copy.deepcopy(url_)
+
+            yield req
+
+    def parse_list_item(self, response):
+        item = copy.deepcopy(response.meta['item'])
+        page = response.meta['page']
+        keyword=item['keyword']
+        url_=response.meta['url_']
+
+        text=response.text
+        soup=BeautifulSoup(text)
+        lines=soup.find_all(class_="search-result-single ")
+        count=len(lines)
+        # 翻页
+        if count==20:
+            page=page+1
+            url = url_.format(keyword=keyword, page=str(page))
+            req = scrapy.Request(url, headers=headers,callback=self.parse_list_item)
+            req.meta['page'] = page
+            req.meta['item'] = copy.deepcopy(item)
+            req.meta['url_'] = copy.deepcopy(url_)
+            yield req
+
+        for line in lines:
+            # 解析 item 数据
+            content=line.find(class_='content')
+            tmp=content.find("a")
+            name=tmp.get_text()
+
+            href=tmp.get('href')
+            tmp=content.find(class_="num-opening")
+            status=tmp.get_text()
+            tmp=line.find(class_="site")
+            city=tmp.get_text()
+            tmp_list=line.find(class_="info").find_all(class_='title')
+
+            legal_person=tmp_list[0].get_text()
+            log_money=tmp_list[1].get_text()
+            log_date=tmp_list[2].get_text()
+            tmp=line.find(class_="contact")
+            contact=tmp.get_text()
+
+            item['name']=name
+            item['url']=href
+            item['status']=status
+            item['city']=city
+            item['legal_person']=legal_person
+            item['log_money']=log_money
+            item['log_date'] = log_date
+            item['contact'] = contact
+            req = scrapy.Request(href, cookies=COOKIES,headers=headers,callback=self.parse_item)
+            req.meta['item'] = copy.deepcopy(item)
+            yield req
+
+    def parse_item(self, response):
+        item = copy.deepcopy(response.meta['item'])
+        text=response.text
+
+        soup = BeautifulSoup(response.text,"lxml")
+        name=soup.find('h1').get_text()
+        log_addr=soup.find(colspan="4").get_text()
+        company_type=text.split('公司类型</td><td>')[-1].split('<')[0]
+        bs_type=soup.find(colspan="2").get_text()
+        code=text.split('</td><td>公司类型')[0].split('>')[-1]
+
+        item['name'] = name
+        item['log_addr']=log_addr
+        item['company_type'] = company_type
+        item['bs_type'] = bs_type
+        item['code'] = code
+
 
         yield item

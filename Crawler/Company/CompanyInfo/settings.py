@@ -160,7 +160,7 @@ PROXIES = [
 ROBOTSTXT_OBEY = False
 
 # 下载延迟
-DOWNLOAD_DELAY = 3.5
+DOWNLOAD_DELAY = 2
 
 # 不使用cookie, 以应对反爬虫机制
 COOKIES_ENABLED = True

@@ -25,6 +25,30 @@ class Item(scrapy.Item):
     other=scrapy.Field()
     
 
+class Item_ex(scrapy.Item):
+    # define the fields for your item here like:
+    spider_name=scrapy.Field()
+    date=scrapy.Field()
+    keyword=scrapy.Field()
+    city=scrapy.Field()
+    url = scrapy.Field()
+    name=scrapy.Field()
+    legal_person=scrapy.Field()
+    log_money=scrapy.Field()
+    log_date = scrapy.Field()
+    contact = scrapy.Field()
+    status=scrapy.Field()
+
+    code = scrapy.Field()
+    log_addr = scrapy.Field()
+    company_type=scrapy.Field()
+    bs_type=scrapy.Field()
+
+    employee=scrapy.Field()
+    canbao_people=scrapy.Field()
+
+
+
 
 
 
